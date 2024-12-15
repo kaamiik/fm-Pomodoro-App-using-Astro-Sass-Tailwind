@@ -1,0 +1,24 @@
+---
+
+---
+
+<div class="card">
+  <slot />
+</div>
+
+<style lang="scss">
+  @use "../styles/abstracts" as *;
+
+  .card {
+    background-color: $dialog-background-default;
+    color: $dialog-color-default;
+
+    padding: $dialog-padding;
+    border-radius: $dialog-border-radius;
+
+    @include mq(medium) {
+      padding: $dialog-padding-large-screens;
+      border-radius: $dialog-border-radius-large-screens;
+    }
+  }
+</style>

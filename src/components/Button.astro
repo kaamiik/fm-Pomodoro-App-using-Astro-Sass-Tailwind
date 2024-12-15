@@ -1,10 +1,10 @@
 ---
-const { href, theme = "default" } = Astro.props;
+const { href } = Astro.props;
 let El = "button";
 if (href) El = "a";
 ---
 
-<El class="button" {href} data-type={theme}>
+<El class="button" {href}>
   <slot />
 </El>
 
@@ -12,38 +12,37 @@ if (href) El = "a";
   @use "../styles/abstracts" as *;
 
   .button {
+    position: relative;
     display: inline-flex;
     justify-content: center;
     cursor: pointer;
     text-decoration: none;
     line-height: 1;
-    font-family: $button-font-family;
     font-size: $button-font-size;
-    text-transform: $button-text-transform;
-    font-weight: $button-font-weight;
+    font-weight: $body-font-weight;
     padding: $button-padding;
     border: $button-border;
     border-radius: $button-border-radius;
     transition: 275ms ease;
 
-    &[data-type="primary"] {
-      background-color: $button-primary-background;
-      color: $button-primary-color;
+    background-color: $button-primary-background;
+    color: $button-primary-color;
 
-      &:is(:hover, :focus) {
-        background-color: $button-primary-background-hover;
-        color: $button-primary-color-hover;
-      }
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: $button-primary-background-hover;
+      border-radius: $button-border-radius;
+      opacity: 0;
+      transition: 275ms ease;
     }
 
-    &[data-type="accent"] {
-      background-color: $button-accent-background;
-      color: $button-accent-color;
-
-      &:is(:hover, :focus) {
-        background-color: $button-accent-background-hover;
-        color: $button-accent-color-hover;
-      }
+    &:is(:hover, :focus)::after {
+      opacity: 1;
     }
   }
 </style>
