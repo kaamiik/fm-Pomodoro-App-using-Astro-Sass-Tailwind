@@ -1,0 +1,91 @@
+---
+const { type, value } = Astro.props;
+---
+
+<div
+  class="relative flex justify-between items-center gap-3 sm:flex-col sm:items-stretch"
+>
+  <label class="fs-200 text-neutral-800/[0.4]" for={type.replace(" ", "-")}
+    >{type}</label
+  >
+  <input type="number" id={type.replace(" ", "-")} value={value} />
+  <div class="arrows">
+    <button aria-label="Increase minutes">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="7"
+        ><path
+          fill="none"
+          stroke="#1E213F"
+          stroke-opacity=".25"
+          stroke-width="2"
+          d="M1 6l6-4 6 4"></path></svg
+      >
+    </button>
+    <button aria-label="decrease minutes">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="7"
+        ><path
+          fill="none"
+          stroke="#1E213F"
+          stroke-opacity=".25"
+          stroke-width="2"
+          d="M1 1l6 4 6-4"></path></svg
+      >
+    </button>
+  </div>
+</div>
+
+<style lang="scss">
+  @use "../styles/abstracts" as *;
+
+  input[type="number"] {
+    border: 0;
+    background-color: $color-neutral-200;
+    font-size: $font-size-500;
+    padding: $size-4;
+    border-radius: $border-radius-1;
+    width: 51%;
+
+    @include mq(small) {
+      width: 100%;
+    }
+
+    -moz-appearance: textfield;
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    &:focus {
+      outline: 2px solid $color-primary-400;
+      border-radius: $border-radius-1;
+    }
+  }
+
+  .arrows {
+    position: absolute;
+    right: $size-4;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+
+    @include mq(small) {
+      top: calc(50% + $size-3);
+    }
+
+    & > button path {
+      stroke-opacity: 0.25;
+      transition: stroke-opacity 270ms ease-in-out;
+    }
+
+    & > button:is(:hover, :focus-visible) path {
+      stroke-opacity: 1;
+    }
+
+    & > button:focus-visible {
+      outline: 2px solid $color-primary-400;
+      outline-offset: -2px;
+      border-radius: 5px;
+    }
+  }
+</style>
