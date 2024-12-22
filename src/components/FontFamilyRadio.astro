@@ -1,0 +1,45 @@
+---
+const { type, fontClass, ischecked } = Astro.props;
+---
+
+<label for={type} class=`ff-radio ${fontClass}`>
+  <input type="radio" id={type} name="font" value={type} checked={ischecked} />
+  Aa
+</label>
+
+<style lang="scss">
+  @use "../styles/abstracts/" as *;
+
+  .ff-radio {
+    position: relative;
+    font-size: $font-size-600;
+    opacity: 73%;
+    background-color: $color-neutral-200;
+    padding: 0 0.625em;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:has(input[type="radio"]:checked) {
+      background-color: $color-neutral-900;
+      color: $color-neutral-100;
+      opacity: 1;
+    }
+
+    &:has(input[type="radio"]:is(:hover, :focus-visible)) {
+      outline: 2px solid $color-neutral-200;
+      outline-offset: 5px;
+    }
+  }
+
+  input[type="radio"] {
+    position: absolute;
+    width: 110%;
+    height: 110%;
+    cursor: pointer;
+    z-index: 10;
+    opacity: 0;
+  }
+</style>
