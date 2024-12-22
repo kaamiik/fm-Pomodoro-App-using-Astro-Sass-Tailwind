@@ -1,12 +1,10 @@
 ---
 const { href } = Astro.props;
-let El = "button";
-if (href) El = "a";
 ---
 
-<El class="button" {href}>
+<button type="submit" class="button js-submit-btn" {href}>
   <slot />
-</El>
+</button>
 
 <style lang="scss">
   @use "../styles/abstracts" as *;
@@ -43,6 +41,10 @@ if (href) El = "a";
 
     &:is(:hover, :focus)::after {
       opacity: 1;
+    }
+
+    &:focus-visible {
+      outline: 3px solid $color-primary-500;
     }
   }
 </style>
