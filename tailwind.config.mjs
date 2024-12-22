@@ -63,6 +63,9 @@ export default {
       one: "-50px -50px 100px 0 hsl(234, 40%, 25%)",
       two: "50px 50px 100px 0 hsl(235, 45%, 13%)",
     },
+    screens: {
+      sm: "28em",
+    },
     extend: {},
   },
   plugins: [],
