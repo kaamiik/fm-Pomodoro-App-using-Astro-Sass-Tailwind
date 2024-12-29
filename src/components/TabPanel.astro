@@ -1,0 +1,114 @@
+---
+const { id, label, time, isVisible } = Astro.props;
+---
+
+<div
+  class={`tabpanel | w-fit mx-auto mt-12 p-3 rounded-full shadow-combined md:p-5 ${isVisible ? "" : "hidden"}`}
+  role="tabpanel"
+  id={`tabpanel-${id}`}
+  aria-labelledby={`tab-${id}`}
+>
+  <div class="progressbar-container | rounded-full bg-neutral-900">
+    <div class="progressbar">
+      <div class="progressbar__outer">
+        <div class="progressbar__inner">
+          <div class="progressbar__content">
+            <time class="fs-900 tracking-one font-normal" datetime={time}
+              >{time}</time
+            >
+            <button
+              class="fs-700 font-bold tracking-five md:tracking-six text-neutral-300 uppercase ms-2"
+            >
+              restart
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
+        <circle
+          cx="80"
+          cy="80"
+          r="70"
+          stroke-linecap="round"
+          stroke=""
+          stroke-width="10"
+          fill="none"></circle>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<style lang="scss">
+  @use "../styles/abstracts/" as *;
+
+  .tabpanel {
+    background: linear-gradient(-45deg, hsl(234 33% 27%), hsl(235 39% 11%));
+  }
+
+  .progressbar {
+    --size-outer: 15rem;
+    --size-inner: 14rem;
+    @include mq(medium) {
+      --size-outer: 23rem;
+      --size-inner: 22rem;
+    }
+    position: relative;
+    width: var(--size-outer);
+    aspect-ratio: 1 / 1;
+
+    &__outer {
+      width: var(--size-outer);
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+    }
+
+    &__inner {
+      width: var(--size-inner);
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+    }
+
+    &__content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      & button {
+        transition: color 270ms ease-in-out;
+
+        &:is(:hover, :focus-visible) {
+          color: var(--selected-color);
+        }
+
+        &:focus-visible {
+          outline: 2px solid $color-neutral-100;
+          outline-offset: 3px;
+          border-radius: 8px;
+        }
+      }
+    }
+
+    svg {
+      width: var(--size-outer);
+      height: var(--size-outer);
+      transform: rotate(-85deg);
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  }
+
+  circle {
+    fill: none;
+    stroke: var(--selected-color);
+    stroke-width: 0.3rem;
+    stroke-dasharray: 438;
+    stroke-dashoffset: 0;
+  }
+</style>
