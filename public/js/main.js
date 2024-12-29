@@ -7,8 +7,24 @@ const fontRadios = document.querySelectorAll('input[name="font"]');
 const settingsForm = document.querySelector("form");
 const body = document.body;
 
+const defaultTimeValues = {
+  pomodoro: 25,
+  "short-break": 5,
+  "long-break": 15,
+};
+let currentTimeValues = { ...defaultTimeValues };
+
+const inputToTabPanelMap = {
+  pomodoro: "tabpanel-1",
+  "short-break": "tabpanel-2",
+  "long-break": "tabpanel-3",
+};
+
 const defaultFont = "font-sans";
 let currentFont = defaultFont;
+
+const defaultColor = "coral";
+let currentColor = defaultColor;
 
 const tabList = document.querySelector("[role='tablist']");
 const tabs = tabList.querySelectorAll("[role='tab']");
@@ -77,7 +93,28 @@ function changeTabPanel(event) {
   tabPanel.classList.remove("hidden");
 }
 
-function updateRadioButtons(fontClass) {
+function updateTimeInputs() {
+  timeInputs.forEach((input) => {
+    const type = input.id;
+    input.value = currentTimeValues[type];
+  });
+}
+
+function updateTimeInTabPanels() {
+  timeInputs.forEach((input) => {
+    const tabPanelId = inputToTabPanelMap[input.id];
+    const tabPanel = document.getElementById(tabPanelId);
+    if (tabPanel) {
+      const timeElement = tabPanel.querySelector("time");
+      if (timeElement) {
+        timeElement.textContent = `${input.value}:00`;
+        timeElement.setAttribute("datetime", input.value);
+      }
+    }
+  });
+}
+
+function updateFontRadios(fontClass) {
   fontRadios.forEach((radio) => {
     radio.checked = false;
   });
@@ -88,6 +125,15 @@ function updateRadioButtons(fontClass) {
     document.getElementById("roboto-slab").checked = true;
   } else if (fontClass === "font-mono") {
     document.getElementById("space-mono").checked = true;
+  }
+}
+
+function updateColorRadios() {
+  const colorRadio = document.querySelector(
+    `input[name="color"][value="${currentColor}"]`
+  );
+  if (colorRadio) {
+    colorRadio.checked = true;
   }
 }
 
@@ -102,6 +148,9 @@ tabs.forEach((tab) => {
 
 // Settings Code
 btnSettings.addEventListener("click", () => {
+  updateTimeInputs();
+  updateFontRadios(currentFont);
+  updateColorRadios();
   dialog.showModal();
 });
 
@@ -121,9 +170,11 @@ timeInputs.forEach((input) => {
       input.value = 0;
     }
   });
-});
 
-updateRadioButtons(currentFont);
+  input.addEventListener("input", () => {
+    updateTimeInTabPanels();
+  });
+});
 
 fontRadios.forEach((radio) => {
   radio.addEventListener("change", (event) => {
@@ -140,6 +191,13 @@ fontRadios.forEach((radio) => {
 
 settingsForm.addEventListener("submit", (event) => {
   event.preventDefault();
+
+  // Update time values
+  timeInputs.forEach((input) => {
+    const type = input.id;
+    currentTimeValues[type] = parseInt(input.value, 10);
+  });
+
   // Update the fonts
   const selectedFont = document.querySelector(
     "input[name='font']:checked"
@@ -171,6 +229,9 @@ settingsForm.addEventListener("submit", (event) => {
 
 btnClose.addEventListener("click", () => {
   dialog.close();
+  updateTimeInputs();
+  updateColorRadios();
+  updateTimeInTabPanels();
   body.className = currentFont;
-  updateRadioButtons(currentFont);
+  updateFontRadios(currentFont);
 });
