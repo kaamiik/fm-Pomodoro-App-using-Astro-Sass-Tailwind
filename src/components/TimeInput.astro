@@ -8,13 +8,7 @@ const { type, value } = Astro.props;
   <label class="fs-200 text-neutral-800/[0.4]" for={type.replace(" ", "-")}
     >{type}</label
   >
-  <input
-    type="number"
-    id={type.replace(" ", "-")}
-    value={value}
-    min="0"
-    max="0"
-  />
+  <input type="number" id={type.replace(" ", "-")} value={value} min="0" />
   <div class="arrows">
     <button class="js-increase-btn" aria-label="Increase minutes" type="button">
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="7"
