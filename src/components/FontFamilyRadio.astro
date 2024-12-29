@@ -4,7 +4,8 @@ const { type, fontClass, ischecked } = Astro.props;
 
 <label for={type} class=`ff-radio ${fontClass}`>
   <input type="radio" id={type} name="font" value={type} checked={ischecked} />
-  Aa
+  <span aria-hidden="true">Aa</span>
+  <span class="visually-hidden">{type} font</span>
 </label>
 
 <style lang="scss">
