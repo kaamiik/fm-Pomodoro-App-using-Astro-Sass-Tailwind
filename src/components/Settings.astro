@@ -1,0 +1,187 @@
+---
+import TimeInput from "./TimeInput.astro";
+import Button from "./Button.astro";
+import FontFamilyRadio from "./FontFamilyRadio.astro";
+import ColorRadio from "./ColorRadio.astro";
+---
+
+<div class="mt-20 mb-12 md:mt-25 md:mb-16 lg:mt-16 flex justify-center">
+  <button
+    class="btn-settings js-btn-settings"
+    type="button"
+    aria-label="SETTINGS"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"
+      ><path
+        fill="#D7E0FF"
+        d="M26.965 17.682l-2.927-2.317c.055-.448.097-.903.097-1.365 0-.462-.042-.917-.097-1.365l2.934-2.317a.702.702 0 00.167-.896l-2.775-4.851a.683.683 0 00-.847-.301l-3.454 1.407a10.506 10.506 0 00-2.345-1.379l-.52-3.71A.716.716 0 0016.503 0h-5.55a.703.703 0 00-.687.588l-.52 3.71c-.847.357-1.63.819-2.345 1.379L3.947 4.27a.691.691 0 00-.847.301L.325 9.422a.705.705 0 00.167.896l2.927 2.317c-.055.448-.097.903-.097 1.365 0 .462.042.917.097 1.365L.492 17.682a.702.702 0 00-.167.896L3.1 23.429a.683.683 0 00.847.301L7.4 22.323a10.506 10.506 0 002.345 1.379l.52 3.71c.056.329.34.588.687.588h5.55a.703.703 0 00.687-.588l.52-3.71c.847-.357 1.631-.819 2.346-1.379l3.454 1.407c.313.119.673 0 .847-.301l2.775-4.851a.705.705 0 00-.167-.896zM13.73 18.9c-2.685 0-4.857-2.191-4.857-4.9 0-2.709 2.172-4.9 4.857-4.9 2.684 0 4.856 2.191 4.856 4.9 0 2.71-2.172 4.9-4.856 4.9z"
+        opacity=".5"></path></svg
+    >
+  </button>
+</div>
+<dialog>
+  <form class="container" action="#">
+    <div class="card">
+      <div
+        class="card__header flex justify-between items-center px-6 pt-6 pb-7"
+      >
+        <h2>Settings</h2>
+        <button
+          class="btn-close js-btn-close"
+          type="button"
+          aria-label="CLOSE SETTINGS"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+            ><path
+              fill="#1E213F"
+              fill-rule="evenodd"
+              d="M11.95.636l1.414 1.414L8.414 7l4.95 4.95-1.414 1.414L7 8.414l-4.95 4.95L.636 11.95 5.586 7 .636 2.05 2.05.636 7 5.586l4.95-4.95z"
+              opacity=".5"></path></svg
+          >
+        </button>
+      </div>
+      <div class="card__content mx-6">
+        <div
+          role="group"
+          class="card__time py-6 flex flex-col gap-5"
+          aria-labelledby="time-heading"
+        >
+          <h3
+            id="time-heading"
+            class="fs-300 text-center tracking-three uppercase md:text-left"
+          >
+            Time (minutes)
+          </h3>
+          <div class="flex flex-col gap-2 md:flex-row md:gap-5">
+            <TimeInput type="pomodoro" value="25" />
+            <TimeInput type="short break" value="5" />
+            <TimeInput type="long break" value="15" />
+          </div>
+        </div>
+        <div
+          role="radiogroup"
+          class="card__font py-6 flex flex-col gap-4 md:flex-row md:justify-between md:items-center"
+          aria-labelledby="font-heading"
+        >
+          <h3
+            id="font-heading"
+            class="fs-300 text-center tracking-three uppercase"
+          >
+            Font
+          </h3>
+          <div class="flex justify-center items-center gap-4">
+            <FontFamilyRadio
+              type="kumbh-sans"
+              fontClass="font-sans"
+              ischecked={true}
+            />
+            <FontFamilyRadio
+              type="roboto-slab"
+              fontClass="font-serif"
+              ischecked={false}
+            />
+            <FontFamilyRadio
+              type="space-mono"
+              fontClass="font-mono"
+              ischecked={false}
+            />
+          </div>
+        </div>
+        <div
+          role="radiogroup"
+          class="card__theme py-6 pb-15 flex flex-col gap-4 md:flex-row md:justify-between md:items-center"
+          aria-labelledby="color-heading"
+        >
+          <h3
+            id="color-heading"
+            class="fs-300 text-center tracking-three uppercase"
+          >
+            Color
+          </h3>
+          <div class="flex justify-center items-center gap-4">
+            <ColorRadio
+              type="coral"
+              colorClass="bg-primary-400"
+              ischecked={true}
+            />
+            <ColorRadio
+              type="cyan"
+              colorClass="bg-primary-500"
+              ischecked={false}
+            />
+            <ColorRadio
+              type="purple"
+              colorClass="bg-primary-600"
+              ischecked={false}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex justify-center -translate-y-1/2">
+      <Button>Apply</Button>
+    </div>
+  </form>
+</dialog>
+
+<style lang="scss">
+  @use "../styles/abstracts" as *;
+
+  .btn-settings path {
+    opacity: 0.25;
+    transition: opacity 270ms ease-in-out;
+  }
+
+  .btn-settings:is(:hover, :focus-visible) path {
+    opacity: 1;
+  }
+
+  .btn-settings:focus-visible {
+    outline: 2px solid var(--selected-color);
+    outline-offset: 2px;
+    border-radius: 5px;
+  }
+
+  .card {
+    background-color: $dialog-background-default;
+    color: $dialog-color-default;
+
+    border-radius: $dialog-border-radius;
+
+    @include mq(medium) {
+      border-radius: $dialog-border-radius-large-screens;
+    }
+
+    &__header,
+    &__time,
+    &__font {
+      border-bottom: 1px solid #e3e1e1;
+    }
+  }
+
+  .btn-close path {
+    opacity: 0.5;
+    transition: opacity 270ms ease-in-out;
+  }
+
+  .btn-close:is(:hover, :focus-visible) path {
+    opacity: 1;
+  }
+
+  .btn-close:focus-visible {
+    outline: 2px solid $color-primary-400;
+    outline-offset: 3px;
+    border-radius: 5px;
+  }
+
+  dialog {
+    border: none;
+    padding: 0;
+    background: transparent;
+    margin-block: $size-12;
+
+    &::backdrop {
+      background: hsla(234, 47%, 8%, 0.5);
+    }
+  }
+</style>
