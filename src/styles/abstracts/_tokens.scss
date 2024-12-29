@@ -27,7 +27,7 @@ $box-shadow-2: 50px 50px 100px 0 hsl(235, 45%, 13%);
 // body
 $body-font-size: $font-size-400;
 $body-line-height: 1.3;
-$body-font-weight: $font-weight-default;
+$body-font-weight: $font-weight-regular;
 $body-text-color: $color-text-default;
 $body-background-color: $color-background-default;
 
@@ -41,7 +41,7 @@ $container-max-width-narrow: 25.625rem;
 
 // site header
 $site-header-padding: $size-8 0;
-$site-header-padding-tablet: $size-20 0;
+$site-header-padding-tablet: $size-20 0 $size-16;
 $site-header-padding-desktop: $size-12 0;
 
 // buttons
