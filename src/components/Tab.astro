@@ -1,0 +1,41 @@
+---
+const { id, label, isSelected, controls } = Astro.props;
+---
+
+<button
+  id={id}
+  class="tab | fs-400 font-bold py-[1.4em] px-[1.375em] md:px-[1.6em] rounded-full"
+  role="tab"
+  type="button"
+  aria-selected={isSelected}
+  tabindex={isSelected ? "0" : "-1"}
+  aria-controls={controls}
+>
+  {label}
+</button>
+
+<style lang="scss">
+  @use "../styles/abstracts/" as *;
+
+  .tab {
+    &[aria-selected="true"] {
+      background-color: var(--selected-color);
+      color: $color-neutral-800;
+    }
+    &:not([aria-selected="true"]) {
+      color: $color-neutral-300;
+      background-color: transparent;
+      opacity: 0.4;
+      transition: opacity 270ms ease-in-out;
+    }
+
+    &:not([aria-selected="true"]):hover {
+      opacity: 1;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-neutral-100;
+      outline-offset: 2px;
+    }
+  }
+</style>
