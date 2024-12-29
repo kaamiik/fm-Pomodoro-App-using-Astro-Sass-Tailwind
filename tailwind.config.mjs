@@ -50,6 +50,7 @@ export default {
       one: "10px",
       two: "15px",
       three: "25px",
+      full: "100vh",
     },
     letterSpacing: {
       one: "-4px",
@@ -62,9 +63,13 @@ export default {
     boxShadow: {
       one: "-50px -50px 100px 0 hsl(234, 40%, 25%)",
       two: "50px 50px 100px 0 hsl(235, 45%, 13%)",
+      combined:
+        "-50px -50px 100px 0 hsl(234, 40%, 25%), 50px 50px 100px 0 hsl(235, 45%, 13%)",
     },
     screens: {
-      sm: "28em",
+      sm: "25em",
+      md: "29em",
+      lg: "64em",
     },
     extend: {},
   },
