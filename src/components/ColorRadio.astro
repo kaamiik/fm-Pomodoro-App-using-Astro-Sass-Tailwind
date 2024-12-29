@@ -4,6 +4,7 @@ const { type, colorClass, ischecked } = Astro.props;
 
 <label for={type} class={`color-radio ${colorClass}`}>
   <input type="radio" id={type} name="color" value={type} checked={ischecked} />
+  <span class="visually-hidden">{type} color</span>
 </label>
 
 <style lang="scss">
@@ -21,12 +22,14 @@ const { type, colorClass, ischecked } = Astro.props;
 
     &::after {
       content: "\2713";
+      font-weight: $font-weight-default;
       color: $color-neutral-900;
       display: flex;
       align-items: center;
       justify-content: center;
       opacity: 0;
       visibility: hidden;
+      pointer-events: none;
     }
 
     &:has(input[type="radio"]:checked)::after {
