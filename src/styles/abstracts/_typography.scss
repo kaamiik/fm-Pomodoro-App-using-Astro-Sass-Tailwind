@@ -8,7 +8,7 @@ $font-family-mono: $-ff-mono;
 
 $font-sizes: (
   "small": (
-    "900": 5rem,
+    "900": 4rem,
     "800": 1.25rem,
     "700": 0.875rem,
     "600": 0.9375rem,
@@ -38,5 +38,7 @@ $font-size-700: var(--fs-700);
 $font-size-800: var(--fs-800);
 $font-size-900: var(--fs-900);
 
+$-fw-400: 400;
 $-fw-700: 700;
+$font-weight-regular: $-fw-400;
 $font-weight-default: $-fw-700;
