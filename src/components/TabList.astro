@@ -1,0 +1,21 @@
+---
+import Tab from "./Tab.astro";
+const { tabs } = Astro.props;
+---
+
+<div
+  class="tablist | mt-3 md:mt-0 lg:mt-2 p-2 bg-neutral-900 rounded-full flex items-center gap-1 w-fit mx-auto"
+  role="tablist"
+>
+  {
+    tabs.map((tab) => (
+      <Tab
+        key={tab.id}
+        id={tab.id}
+        label={tab.label}
+        isSelected={tab.isSelected}
+        controls={tab.controls}
+      />
+    ))
+  }
+</div>
