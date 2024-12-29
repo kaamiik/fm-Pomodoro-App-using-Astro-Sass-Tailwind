@@ -3,14 +3,20 @@ const { type, value } = Astro.props;
 ---
 
 <div
-  class="relative flex justify-between items-center gap-3 sm:flex-col sm:items-stretch"
+  class="relative flex justify-between items-center gap-3 md:flex-col md:items-stretch"
 >
   <label class="fs-200 text-neutral-800/[0.4]" for={type.replace(" ", "-")}
     >{type}</label
   >
-  <input type="number" id={type.replace(" ", "-")} value={value} />
+  <input
+    type="number"
+    id={type.replace(" ", "-")}
+    value={value}
+    min="0"
+    max="0"
+  />
   <div class="arrows">
-    <button aria-label="Increase minutes">
+    <button class="js-increase-btn" aria-label="Increase minutes" type="button">
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="7"
         ><path
           fill="none"
@@ -20,7 +26,7 @@ const { type, value } = Astro.props;
           d="M1 6l6-4 6 4"></path></svg
       >
     </button>
-    <button aria-label="decrease minutes">
+    <button class="js-decrease-btn" aria-label="decrease minutes" type="button">
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="7"
         ><path
           fill="none"
@@ -42,9 +48,9 @@ const { type, value } = Astro.props;
     font-size: $font-size-500;
     padding: $size-4;
     border-radius: $border-radius-1;
-    width: 51%;
+    width: 60%;
 
-    @include mq(small) {
+    @include mq(medium) {
       width: 100%;
     }
 
@@ -56,7 +62,7 @@ const { type, value } = Astro.props;
     }
 
     &:focus {
-      outline: 2px solid $color-primary-400;
+      outline: 2px solid var(--selected-color);
       border-radius: $border-radius-1;
     }
   }
@@ -69,7 +75,7 @@ const { type, value } = Astro.props;
     display: flex;
     flex-direction: column;
 
-    @include mq(small) {
+    @include mq(medium) {
       top: calc(50% + $size-3);
     }
 
@@ -83,7 +89,7 @@ const { type, value } = Astro.props;
     }
 
     & > button:focus-visible {
-      outline: 2px solid $color-primary-400;
+      outline: 2px solid var(--selected-color);
       outline-offset: -2px;
       border-radius: 5px;
     }
