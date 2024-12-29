@@ -7,7 +7,7 @@ const { title } = Astro.props;
 <!doctype html>
 <html lang="en">
   <BaseHead {title} />
-  <body class="font-sans">
+  <body class="font-sans" style="--selected-color: var(--primary-400);">
     <SiteHeader />
     <main>
       <slot />
