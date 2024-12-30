@@ -1,68 +1,60 @@
-const dialog = document.querySelector("dialog");
-const btnSettings = document.querySelector(".js-btn-settings");
-const btnClose = document.querySelector(".js-btn-close");
-const btnSubmit = document.querySelector(".js-submit-btn");
-const timeInputs = document.querySelectorAll('input[type="number"]');
-const fontRadios = document.querySelectorAll('input[name="font"]');
-const settingsForm = document.querySelector("form");
-const body = document.body;
+const elements = {
+  dialog: document.querySelector("dialog"),
+  btnSettings: document.querySelector(".js-btn-settings"),
+  btnClose: document.querySelector(".js-btn-close"),
+  timeInputs: document.querySelectorAll('input[type="number"]'),
+  fontRadios: document.querySelectorAll('input[name="font"]'),
+  settingsForm: document.querySelector("form"),
+  body: document.body,
+  tabList: document.querySelector("[role='tablist']"),
+  tabs: document.querySelectorAll("[role='tab']"),
+  tabPanels: document.querySelectorAll("[role='tabpanel']"),
+};
 
-const defaultTimeValues = {
+const timeValues = {
   pomodoro: 25,
   "short-break": 5,
   "long-break": 15,
 };
-let currentTimeValues = { ...defaultTimeValues };
 
-const inputToTabPanelMap = {
-  pomodoro: "tabpanel-1",
-  "short-break": "tabpanel-2",
-  "long-break": "tabpanel-3",
-};
+let currentFont = "font-sans";
+let currentColor = "coral";
+let tabFocus = 0;
+let activePanel = null;
 
-const defaultFont = "font-sans";
-let currentFont = defaultFont;
+const timerStates = new Map();
 
-const defaultColor = "coral";
-let currentColor = defaultColor;
-
-const tabList = document.querySelector("[role='tablist']");
-const tabs = tabList.querySelectorAll("[role='tab']");
-let tabFoucs = 0;
-
-const progressbar = document.querySelector(".progressbar");
-const time = document.querySelector("time");
-
-function enableProgressBar() {
-  progressbar.setAttribute("role", "progressbar");
-  progressbar.setAttribute("aria-valuenow", time.textContent);
-  progressbar.setAttribute("aria-live", "polite");
-}
+elements.tabPanels.forEach((panel) => {
+  timerStates.set(panel.id, {
+    interval: null,
+    totalTime: 0,
+    remainingTime: 0,
+    isRunning: false,
+  });
+});
 
 function changeTabFocus(event) {
   const keydownLeft = 37;
   const keydownRight = 39;
 
   if (event.keyCode === keydownLeft || event.keyCode === keydownRight) {
-    tabs[tabFoucs].setAttribute("tabindex", -1);
+    elements.tabs[tabFocus].setAttribute("tabindex", -1);
   }
 
   if (event.keyCode === keydownRight) {
-    tabFoucs++;
-
-    if (tabFoucs >= tabs.length) {
-      tabFoucs = 0;
+    tabFocus++;
+    if (tabFocus >= elements.tabs.length) {
+      tabFocus = 0;
     }
   } else if (event.keyCode === keydownLeft) {
-    tabFoucs--;
-
-    if (tabFoucs < 0) {
-      tabFoucs = tabs.length - 1;
+    tabFocus--;
+    if (tabFocus < 0) {
+      tabFocus = elements.tabs.length - 1;
     }
   }
 
-  tabs[tabFoucs].setAttribute("tabindex", 0);
-  tabs[tabFoucs].focus();
+  elements.tabs[tabFocus].setAttribute("tabindex", 0);
+  elements.tabs[tabFocus].focus();
 }
 
 function changeTabPanel(event) {
@@ -78,14 +70,6 @@ function changeTabPanel(event) {
 
   targetTab.setAttribute("aria-selected", true);
 
-  tabContainer.querySelectorAll("[role='tab']").forEach((tab) => {
-    tab.classList.remove("bg-primary-400", "text-neutral-800");
-    tab.classList.add("text-neutral-300");
-  });
-
-  targetTab.classList.add("bg-primary-400", "text-neutral-800");
-  targetTab.classList.remove("text-neutral-300");
-
   divContainer.querySelectorAll("[role='tabpanel']").forEach((panel) => {
     panel.classList.add("hidden");
   });
@@ -93,145 +77,210 @@ function changeTabPanel(event) {
   tabPanel.classList.remove("hidden");
 }
 
-function updateTimeInputs() {
-  timeInputs.forEach((input) => {
-    const type = input.id;
-    input.value = currentTimeValues[type];
-  });
+function updateTimerDisplay(panel) {
+  const state = timerStates.get(panel.id);
+  const timeElement = panel.querySelector("time");
+  const minutes = Math.floor(state.remainingTime / 60);
+  const seconds = state.remainingTime % 60;
+  const timeString = `${String(minutes).padStart(2, "0")}:${String(
+    seconds
+  ).padStart(2, "0")}`;
+
+  timeElement.textContent = timeString;
+  timeElement.setAttribute("datetime", timeString);
 }
 
-function updateTimeInTabPanels() {
-  timeInputs.forEach((input) => {
-    const tabPanelId = inputToTabPanelMap[input.id];
-    const tabPanel = document.getElementById(tabPanelId);
-    if (tabPanel) {
-      const timeElement = tabPanel.querySelector("time");
-      if (timeElement) {
-        timeElement.textContent = `${input.value}:00`;
-        timeElement.setAttribute("datetime", input.value);
-      }
+function updateProgressBar(panel) {
+  const state = timerStates.get(panel.id);
+  const circle = panel.querySelector("circle");
+  const strokeDasharray = 440;
+  const progress = 1 - state.remainingTime / state.totalTime;
+  circle.style.strokeDashoffset = strokeDasharray * progress;
+}
+
+function resetTimer(panel) {
+  const state = timerStates.get(panel.id);
+  const timeType = panel.id.includes("1")
+    ? "pomodoro"
+    : panel.id.includes("2")
+    ? "short-break"
+    : "long-break";
+
+  if (state.interval) {
+    clearInterval(state.interval);
+    state.interval = null;
+  }
+
+  state.totalTime = timeValues[timeType] * 60;
+  state.remainingTime = state.totalTime;
+  state.isRunning = false;
+
+  updateTimerDisplay(panel);
+  updateProgressBar(panel);
+  panel.querySelector("button").textContent = "start";
+}
+
+function resetAllTimersExcept(currentPanelId) {
+  elements.tabPanels.forEach((panel) => {
+    if (panel.id !== currentPanelId) {
+      resetTimer(panel);
     }
   });
 }
 
-function updateFontRadios(fontClass) {
-  fontRadios.forEach((radio) => {
-    radio.checked = false;
-  });
+function setTimerDuration(panel, minutes) {
+  const state = timerStates.get(panel.id);
 
-  if (fontClass === "font-sans") {
-    document.getElementById("kumbh-sans").checked = true;
-  } else if (fontClass === "font-serif") {
-    document.getElementById("roboto-slab").checked = true;
-  } else if (fontClass === "font-mono") {
-    document.getElementById("space-mono").checked = true;
+  if (state.interval) {
+    clearInterval(state.interval);
+    state.interval = null;
   }
+
+  state.totalTime = minutes * 60;
+  state.remainingTime = state.totalTime;
+  state.isRunning = false;
+
+  updateTimerDisplay(panel);
+  updateProgressBar(panel);
+  panel.querySelector("button").textContent = "start";
 }
 
-function updateColorRadios() {
-  const colorRadio = document.querySelector(
-    `input[name="color"][value="${currentColor}"]`
-  );
-  if (colorRadio) {
-    colorRadio.checked = true;
-  }
-}
+function startTimer(panel) {
+  const state = timerStates.get(panel.id);
+  const button = panel.querySelector("button");
 
-// Progressbar code
-enableProgressBar();
+  resetAllTimersExcept(panel.id);
 
-// Change Tabs
-tabList.addEventListener("keydown", changeTabFocus);
-tabs.forEach((tab) => {
-  tab.addEventListener("click", changeTabPanel);
-});
-
-// Settings Code
-btnSettings.addEventListener("click", () => {
-  updateTimeInputs();
-  updateFontRadios(currentFont);
-  updateColorRadios();
-  dialog.showModal();
-});
-
-timeInputs.forEach((input) => {
-  const wrapper = input.closest("div");
-  const increaseBtn = wrapper.querySelector(".js-increase-btn");
-  const decreaseBtn = wrapper.querySelector(".js-decrease-btn");
-
-  increaseBtn.addEventListener("click", () => {
-    input.value = parseInt(input.value) + 1;
-  });
-
-  decreaseBtn.addEventListener("click", () => {
-    input.value = parseInt(input.value) - 1;
-
-    if (input.value < 0) {
-      input.value = 0;
+  state.isRunning = true;
+  state.interval = setInterval(() => {
+    if (state.remainingTime > 0) {
+      state.remainingTime--;
+      updateTimerDisplay(panel);
+      updateProgressBar(panel);
+    } else {
+      clearInterval(state.interval);
+      state.interval = null;
+      state.isRunning = false;
+      button.textContent = "restart";
     }
+  }, 1000);
+}
+
+function handleTimerButton(event) {
+  const button = event.target;
+  const panel = button.closest('[role="tabpanel"]');
+  const state = timerStates.get(panel.id);
+
+  switch (button.textContent.trim().toLowerCase()) {
+    case "start":
+      button.textContent = "pause";
+      startTimer(panel);
+      break;
+
+    case "pause":
+      button.textContent = "start";
+      clearInterval(state.interval);
+      state.interval = null;
+      state.isRunning = false;
+      break;
+
+    case "restart":
+      const timeType = panel.id.includes("1")
+        ? "pomodoro"
+        : panel.id.includes("2")
+        ? "short-break"
+        : "long-break";
+      setTimerDuration(panel, timeValues[timeType]);
+      break;
+  }
+}
+
+function updateSettings() {
+  elements.timeInputs.forEach((input) => {
+    timeValues[input.id] = parseInt(input.value, 10);
   });
 
-  input.addEventListener("input", () => {
-    updateTimeInTabPanels();
-  });
-});
-
-fontRadios.forEach((radio) => {
-  radio.addEventListener("change", (event) => {
-    const selectedFontClass =
-      event.target.value === "kumbh-sans"
-        ? "font-sans"
-        : event.target.value === "roboto-slab"
-        ? "font-serif"
-        : "font-mono";
-
-    body.className = selectedFontClass;
-  });
-});
-
-settingsForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-
-  // Update time values
-  timeInputs.forEach((input) => {
-    const type = input.id;
-    currentTimeValues[type] = parseInt(input.value, 10);
-  });
-
-  // Update the fonts
   const selectedFont = document.querySelector(
     "input[name='font']:checked"
   ).value;
-
   currentFont =
     selectedFont === "kumbh-sans"
       ? "font-sans"
       : selectedFont === "roboto-slab"
       ? "font-serif"
       : "font-mono";
+  elements.body.className = currentFont;
 
-  // Update the color
   const selectedColor = document.querySelector(
     "input[name='color']:checked"
   ).value;
-
   const colorMap = {
     coral: "--primary-400",
     cyan: "--primary-500",
     purple: "--primary-600",
   };
+  elements.body.style.setProperty(
+    "--selected-color",
+    `var(${colorMap[selectedColor]})`
+  );
 
-  const selectedColorProperty = colorMap[selectedColor];
-  body.style.setProperty("--selected-color", `var(${selectedColorProperty})`);
+  const activePanel = document.querySelector("[role='tabpanel']:not(.hidden)");
+  const timeType = activePanel.id.includes("1")
+    ? "pomodoro"
+    : activePanel.id.includes("2")
+    ? "short-break"
+    : "long-break";
+  setTimerDuration(activePanel, timeValues[timeType]);
+}
 
-  dialog.close();
+elements.tabPanels.forEach((panel) => {
+  panel.querySelector("button").addEventListener("click", handleTimerButton);
 });
 
-btnClose.addEventListener("click", () => {
-  dialog.close();
-  updateTimeInputs();
-  updateColorRadios();
-  updateTimeInTabPanels();
-  body.className = currentFont;
-  updateFontRadios(currentFont);
+elements.tabList.addEventListener("keydown", changeTabFocus);
+elements.tabs.forEach((tab) => {
+  tab.addEventListener("click", changeTabPanel);
+});
+
+elements.btnSettings.addEventListener("click", () => {
+  elements.timeInputs.forEach((input) => {
+    input.value = timeValues[input.id];
+
+    const wrapper = input.closest("div");
+    const increaseBtn = wrapper.querySelector(".js-increase-btn");
+    const decreaseBtn = wrapper.querySelector(".js-decrease-btn");
+
+    increaseBtn.addEventListener("click", () => {
+      input.value = parseInt(input.value, 10) + 1;
+    });
+
+    decreaseBtn.addEventListener("click", () => {
+      input.value = parseInt(input.value, 10) - 1;
+
+      if (input.value < 0) {
+        input.value = 0;
+      }
+    });
+  });
+  elements.dialog.showModal();
+});
+
+elements.settingsForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  updateSettings();
+  elements.dialog.close();
+});
+
+elements.btnClose.addEventListener("click", () => {
+  elements.dialog.close();
+});
+
+elements.tabs[0].click();
+elements.tabPanels.forEach((panel) => {
+  const timeType = panel.id.includes("1")
+    ? "pomodoro"
+    : panel.id.includes("2")
+    ? "short-break"
+    : "long-break";
+  setTimerDuration(panel, timeValues[timeType]);
 });
