@@ -244,6 +244,17 @@ elements.tabs.forEach((tab) => {
 
 elements.btnSettings.addEventListener("click", () => {
   elements.timeInputs.forEach((input) => {
+    if (input.id === "pomodoro") {
+      input.setAttribute("min", "15");
+      input.setAttribute("max", "90");
+    } else if (input.id === "short-break") {
+      input.setAttribute("min", "3");
+      input.setAttribute("max", "10");
+    } else if (input.id === "long-break") {
+      input.setAttribute("min", "15");
+      input.setAttribute("max", "30");
+    }
+
     input.value = timeValues[input.id];
 
     const wrapper = input.closest("div");
@@ -251,15 +262,15 @@ elements.btnSettings.addEventListener("click", () => {
     const decreaseBtn = wrapper.querySelector(".js-decrease-btn");
 
     increaseBtn.addEventListener("click", () => {
-      input.value = parseInt(input.value, 10) + 1;
+      const max = parseInt(input.getAttribute("max"), 10);
+      const newValue = parseInt(input.value, 10) + 1;
+      input.value = Math.min(newValue, max);
     });
 
     decreaseBtn.addEventListener("click", () => {
-      input.value = parseInt(input.value, 10) - 1;
-
-      if (input.value < 0) {
-        input.value = 0;
-      }
+      const min = parseInt(input.getAttribute("min"), 10);
+      const newValue = parseInt(input.value, 10) - 1;
+      input.value = Math.max(newValue, min);
     });
   });
   elements.dialog.showModal();
