@@ -3,15 +3,21 @@ const { type, value } = Astro.props;
 ---
 
 <div
-  class="relative flex justify-between items-center gap-3 md:flex-col md:items-stretch"
+  class="relative flex flex-1 justify-between items-center gap-3 md:flex-col md:items-stretch"
 >
   <label class="fs-200 text-neutral-800/[0.4]" for={type.replace(" ", "-")}
     >{type}</label
   >
-  <input type="number" id={type.replace(" ", "-")} value={value} min="0" />
+  <input
+    type="number"
+    min=""
+    max=""
+    id={type.replace(" ", "-")}
+    value={value}
+  />
   <div class="arrows">
     <button class="js-increase-btn" aria-label="Increase minutes" type="button">
-      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="7"
+      <svg xmlns="http://www.w3.org/2000/svg" width="21" height="14"
         ><path
           fill="none"
           stroke="#1E213F"
@@ -21,7 +27,7 @@ const { type, value } = Astro.props;
       >
     </button>
     <button class="js-decrease-btn" aria-label="decrease minutes" type="button">
-      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="7"
+      <svg xmlns="http://www.w3.org/2000/svg" width="21" height="14"
         ><path
           fill="none"
           stroke="#1E213F"
@@ -65,7 +71,7 @@ const { type, value } = Astro.props;
     position: absolute;
     right: $size-4;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateY(-34%);
     display: flex;
     flex-direction: column;
 
