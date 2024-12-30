@@ -19,7 +19,7 @@ const { id, label, time, isVisible } = Astro.props;
             <button
               class="fs-700 font-bold tracking-five md:tracking-six text-neutral-300 uppercase ms-2"
             >
-              restart
+              start
             </button>
           </div>
         </div>
@@ -33,6 +33,7 @@ const { id, label, time, isVisible } = Astro.props;
           stroke-linecap="round"
           stroke=""
           stroke-width="10"
+          stroke-dasharray="440"
           fill="none"></circle>
       </svg>
     </div>
@@ -97,7 +98,7 @@ const { id, label, time, isVisible } = Astro.props;
     svg {
       width: var(--size-outer);
       height: var(--size-outer);
-      transform: rotate(-85deg);
+      transform: rotate(-90deg);
       position: absolute;
       top: 0;
       left: 0;
@@ -107,8 +108,7 @@ const { id, label, time, isVisible } = Astro.props;
   circle {
     fill: none;
     stroke: var(--selected-color);
-    stroke-width: 0.3rem;
-    stroke-dasharray: 438;
+    stroke-width: 0.25rem;
     stroke-dashoffset: 0;
   }
 </style>
