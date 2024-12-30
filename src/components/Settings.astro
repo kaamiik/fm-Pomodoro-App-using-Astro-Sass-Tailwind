@@ -20,7 +20,7 @@ import ColorRadio from "./ColorRadio.astro";
   </button>
 </div>
 <dialog>
-  <form class="container" action="#">
+  <form action="#">
     <div class="card">
       <div
         class="card__header flex justify-between items-center px-6 pt-6 pb-7"
@@ -175,10 +175,10 @@ import ColorRadio from "./ColorRadio.astro";
   }
 
   dialog {
+    width: 80%;
+    max-width: 33.75rem;
     border: none;
-    padding: 0;
     background: transparent;
-    margin-block: $size-12;
 
     &::backdrop {
       background: hsla(234, 47%, 8%, 0.5);
