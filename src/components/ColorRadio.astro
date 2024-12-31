@@ -1,9 +1,9 @@
 ---
-const { type, colorClass, ischecked } = Astro.props;
+const { type, colorClass } = Astro.props;
 ---
 
 <label for={type} class={`color-radio ${colorClass}`}>
-  <input type="radio" id={type} name="color" value={type} checked={ischecked} />
+  <input type="radio" id={type} name="color" value={type} />
   <span class="visually-hidden">{type} COLOR</span>
 </label>
 
