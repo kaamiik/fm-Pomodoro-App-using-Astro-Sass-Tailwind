@@ -4,7 +4,7 @@ const { type, colorClass, ischecked } = Astro.props;
 
 <label for={type} class={`color-radio ${colorClass}`}>
   <input type="radio" id={type} name="color" value={type} checked={ischecked} />
-  <p class="visually-hidden">{type} color</p>
+  <p class="visually-hidden">{type} COLOR</p>
 </label>
 
 <style lang="scss">
