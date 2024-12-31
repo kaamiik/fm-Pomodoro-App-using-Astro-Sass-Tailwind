@@ -10,14 +10,15 @@ const { type, value } = Astro.props;
   >
   <input
     type="number"
-    min=""
-    max=""
+    min={type === "pomodoro" ? "15" : type === "short break" ? "3" : "15"}
+    max={type === "pomodoro" ? "90" : type === "short break" ? "10" : "30"}
     id={type.replace(" ", "-")}
     value={value}
+    required
   />
   <div class="arrows">
-    <button class="js-increase-btn" aria-label="Increase minutes" type="button">
-      <svg xmlns="http://www.w3.org/2000/svg" width="21" height="14"
+    <button class="js-increase-btn" type="button">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="7"
         ><path
           fill="none"
           stroke="#1E213F"
@@ -25,9 +26,10 @@ const { type, value } = Astro.props;
           stroke-width="2"
           d="M1 6l6-4 6 4"></path></svg
       >
+      <p class="visually-hidden">INCREASE MINUTES</p>
     </button>
-    <button class="js-decrease-btn" aria-label="decrease minutes" type="button">
-      <svg xmlns="http://www.w3.org/2000/svg" width="21" height="14"
+    <button class="js-decrease-btn" type="button">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="7"
         ><path
           fill="none"
           stroke="#1E213F"
@@ -35,6 +37,7 @@ const { type, value } = Astro.props;
           stroke-width="2"
           d="M1 1l6 4 6-4"></path></svg
       >
+      <p class="visually-hidden">DECREASE MINUTES</p>
     </button>
   </div>
 </div>
@@ -65,13 +68,18 @@ const { type, value } = Astro.props;
       outline: 2px solid var(--selected-color);
       border-radius: $border-radius-1;
     }
+
+    &:user-invalid {
+      outline: 2px solid hsla(0, 100%, 50%, 50%);
+      background-color: hsla(0, 100%, 50%, 5%);
+    }
   }
 
   .arrows {
     position: absolute;
     right: $size-4;
     top: 50%;
-    transform: translateY(-34%);
+    transform: translateY(-50%);
     display: flex;
     flex-direction: column;
 
