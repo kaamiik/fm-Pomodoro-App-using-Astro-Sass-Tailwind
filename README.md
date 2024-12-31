@@ -52,7 +52,7 @@ Users should be able to:
 
 ### What I learned
 
-n this Pomodoro app challenge, I gained valuable experience in several key areas of web development:
+On this Pomodoro app challenge, I gained valuable experience in several key areas of web development:
 
 1.  Implementing features like the timer, progress bar, and settings dialog required careful handling of event listeners and state management.
 
