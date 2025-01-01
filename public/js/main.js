@@ -1,10 +1,10 @@
 const elements = {
-  dialog: document.querySelector("dialog"),
-  btnSettings: document.querySelector(".js-btn-settings"),
-  btnClose: document.querySelector(".js-btn-close"),
+  dialog: document.querySelector('dialog'),
+  btnSettings: document.querySelector('.js-btn-settings'),
+  btnClose: document.querySelector('.js-btn-close'),
   timeInputs: document.querySelectorAll('input[type="number"]'),
   fontRadios: document.querySelectorAll('input[name="font"]'),
-  settingsForm: document.querySelector("form"),
+  settingsForm: document.querySelector('form'),
   body: document.body,
   tabList: document.querySelector("[role='tablist']"),
   tabs: document.querySelectorAll("[role='tab']"),
@@ -13,14 +13,14 @@ const elements = {
 
 const timeValues = {
   pomodoro: 25,
-  "short-break": 5,
-  "long-break": 15,
+  'short-break': 5,
+  'long-break': 15,
 };
 
-let currentFont = "font-sans";
-let currentColor = "coral";
+let currentFont = 'font-sans';
+const currentColor = 'coral';
 let tabFocus = 0;
-let activePanel = null;
+const activePanel = null;
 
 const timerStates = new Map();
 
@@ -38,7 +38,7 @@ function changeTabFocus(event) {
   const keydownRight = 39;
 
   if (event.keyCode === keydownLeft || event.keyCode === keydownRight) {
-    elements.tabs[tabFocus].setAttribute("tabindex", -1);
+    elements.tabs[tabFocus].setAttribute('tabindex', -1);
   }
 
   if (event.keyCode === keydownRight) {
@@ -53,74 +53,74 @@ function changeTabFocus(event) {
     }
   }
 
-  elements.tabs[tabFocus].setAttribute("tabindex", 0);
+  elements.tabs[tabFocus].setAttribute('tabindex', 0);
   elements.tabs[tabFocus].focus();
 }
 
 function changeTabPanel(event) {
   const targetTab = event.target;
-  const targetPanel = targetTab.getAttribute("aria-controls");
+  const targetPanel = targetTab.getAttribute('aria-controls');
   const tabContainer = targetTab.parentNode;
   const divContainer = tabContainer.parentNode;
   const tabPanel = divContainer.querySelector(`#${targetPanel}`);
 
   tabContainer
     .querySelector("[aria-selected='true']")
-    .setAttribute("aria-selected", false);
+    .setAttribute('aria-selected', false);
 
-  targetTab.setAttribute("aria-selected", true);
+  targetTab.setAttribute('aria-selected', true);
 
   divContainer.querySelectorAll("[role='tabpanel']").forEach((panel) => {
-    panel.classList.add("hidden");
+    panel.classList.add('hidden');
   });
 
-  tabPanel.classList.remove("hidden");
+  tabPanel.classList.remove('hidden');
 }
 
 function updateTimerDisplay(panel) {
   const state = timerStates.get(panel.id);
-  const timeElement = panel.querySelector("time");
+  const timeElement = panel.querySelector('time');
   const minutes = Math.floor(state.remainingTime / 60);
   const seconds = state.remainingTime % 60;
-  const timeString = `${String(minutes).padStart(2, "0")}:${String(
-    seconds
-  ).padStart(2, "0")}`;
+  const timeString = `${String(minutes).padStart(2, '0')}:${String(
+    seconds,
+  ).padStart(2, '0')}`;
 
   timeElement.textContent = timeString;
-  timeElement.setAttribute("datetime", timeString);
+  timeElement.setAttribute('datetime', timeString);
 }
 
 function initializeProgressBar(panel) {
   const state = timerStates.get(panel.id);
-  const progressBar = panel.querySelector(".progressbar");
+  const progressBar = panel.querySelector('.progressbar');
 
-  progressBar.setAttribute("role", "progressbar");
-  progressBar.setAttribute("aria-valuemin", 0);
-  progressBar.setAttribute("aria-valuemax", 100);
-  progressBar.setAttribute("aria-valuenow", 100);
-  progressBar.setAttribute("aria-live", "off");
-  progressBar.setAttribute("aria-busy", "false");
+  progressBar.setAttribute('role', 'progressbar');
+  progressBar.setAttribute('aria-valuemin', 0);
+  progressBar.setAttribute('aria-valuemax', 100);
+  progressBar.setAttribute('aria-valuenow', 100);
+  progressBar.setAttribute('aria-live', 'off');
+  progressBar.setAttribute('aria-busy', 'false');
 }
 
 function updateProgressBar(panel) {
   const state = timerStates.get(panel.id);
-  const circle = panel.querySelector("circle");
-  const progressBar = panel.querySelector(".progressbar");
+  const circle = panel.querySelector('circle');
+  const progressBar = panel.querySelector('.progressbar');
   const strokeDasharray = 440;
   const progress = 1 - state.remainingTime / state.totalTime;
   const progressPercentage = 100 - progress * 100;
   circle.style.strokeDashoffset = strokeDasharray * progress;
 
-  progressBar.setAttribute("aria-valuenow", progressPercentage.toFixed(2));
+  progressBar.setAttribute('aria-valuenow', progressPercentage.toFixed(2));
 }
 
 function resetTimer(panel) {
   const state = timerStates.get(panel.id);
-  const timeType = panel.id.includes("1")
-    ? "pomodoro"
-    : panel.id.includes("2")
-    ? "short-break"
-    : "long-break";
+  const timeType = panel.id.includes('1')
+    ? 'pomodoro'
+    : panel.id.includes('2')
+      ? 'short-break'
+      : 'long-break';
 
   if (state.interval) {
     clearInterval(state.interval);
@@ -133,7 +133,7 @@ function resetTimer(panel) {
 
   updateTimerDisplay(panel);
   updateProgressBar(panel);
-  panel.querySelector("button").textContent = "start";
+  panel.querySelector('button').textContent = 'start';
 }
 
 function resetAllTimersExcept(currentPanelId) {
@@ -158,19 +158,19 @@ function setTimerDuration(panel, minutes) {
 
   updateTimerDisplay(panel);
   updateProgressBar(panel);
-  panel.querySelector("button").textContent = "start";
+  panel.querySelector('button').textContent = 'start';
 }
 
 function startTimer(panel) {
   const state = timerStates.get(panel.id);
-  const button = panel.querySelector("button");
-  const progressBar = panel.querySelector(".progressbar");
+  const button = panel.querySelector('button');
+  const progressBar = panel.querySelector('.progressbar');
 
   resetAllTimersExcept(panel.id);
 
   state.isRunning = true;
-  progressBar.setAttribute("aria-busy", "true");
-  progressBar.setAttribute("aria-live", "off");
+  progressBar.setAttribute('aria-busy', 'true');
+  progressBar.setAttribute('aria-live', 'off');
 
   state.interval = setInterval(() => {
     if (state.remainingTime > 0) {
@@ -181,9 +181,9 @@ function startTimer(panel) {
       clearInterval(state.interval);
       state.interval = null;
       state.isRunning = false;
-      button.textContent = "restart";
-      progressBar.setAttribute("aria-busy", "false");
-      progressBar.setAttribute("aria-live", "polite");
+      button.textContent = 'restart';
+      progressBar.setAttribute('aria-busy', 'false');
+      progressBar.setAttribute('aria-live', 'polite');
     }
   }, 1000);
 }
@@ -192,29 +192,29 @@ function handleTimerButton(event) {
   const button = event.target;
   const panel = button.closest('[role="tabpanel"]');
   const state = timerStates.get(panel.id);
-  const progressBar = panel.querySelector(".progressbar");
+  const progressBar = panel.querySelector('.progressbar');
 
   switch (button.textContent.trim().toLowerCase()) {
-    case "start":
-      button.textContent = "pause";
+    case 'start':
+      button.textContent = 'pause';
       startTimer(panel);
       break;
 
-    case "pause":
-      button.textContent = "start";
+    case 'pause':
+      button.textContent = 'start';
       clearInterval(state.interval);
       state.interval = null;
       state.isRunning = false;
-      progressBar.setAttribute("aria-busy", "false");
-      progressBar.setAttribute("aria-live", "polite");
+      progressBar.setAttribute('aria-busy', 'false');
+      progressBar.setAttribute('aria-live', 'polite');
       break;
 
-    case "restart":
-      const timeType = panel.id.includes("1")
-        ? "pomodoro"
-        : panel.id.includes("2")
-        ? "short-break"
-        : "long-break";
+    case 'restart':
+      const timeType = panel.id.includes('1')
+        ? 'pomodoro'
+        : panel.id.includes('2')
+          ? 'short-break'
+          : 'long-break';
       setTimerDuration(panel, timeValues[timeType]);
       break;
   }
@@ -228,37 +228,37 @@ function updateSettings() {
   });
 
   const selectedFont = document.querySelector(
-    "input[name='font']:checked"
+    "input[name='font']:checked",
   ).value;
   currentFont =
-    selectedFont === "kumbh-sans"
-      ? "font-sans"
-      : selectedFont === "roboto-slab"
-      ? "font-serif"
-      : "font-mono";
+    selectedFont === 'kumbh-sans'
+      ? 'font-sans'
+      : selectedFont === 'roboto-slab'
+        ? 'font-serif'
+        : 'font-mono';
   elements.body.className = currentFont;
-  localStorage.setItem("font", selectedFont);
+  localStorage.setItem('font', selectedFont);
 
   const selectedColor = document.querySelector(
-    "input[name='color']:checked"
+    "input[name='color']:checked",
   ).value;
   const colorMap = {
-    coral: "--primary-400",
-    cyan: "--primary-500",
-    purple: "--primary-600",
+    coral: '--primary-400',
+    cyan: '--primary-500',
+    purple: '--primary-600',
   };
   elements.body.style.setProperty(
-    "--selected-color",
-    `var(${colorMap[selectedColor]})`
+    '--selected-color',
+    `var(${colorMap[selectedColor]})`,
   );
-  localStorage.setItem("color", selectedColor);
+  localStorage.setItem('color', selectedColor);
 
   const activePanel = document.querySelector("[role='tabpanel']:not(.hidden)");
-  const timeType = activePanel.id.includes("1")
-    ? "pomodoro"
-    : activePanel.id.includes("2")
-    ? "short-break"
-    : "long-break";
+  const timeType = activePanel.id.includes('1')
+    ? 'pomodoro'
+    : activePanel.id.includes('2')
+      ? 'short-break'
+      : 'long-break';
   setTimerDuration(activePanel, timeValues[timeType]);
 }
 
@@ -271,66 +271,65 @@ function loadSettings() {
     }
   });
 
-  const savedFont = localStorage.getItem("font");
+  const savedFont = localStorage.getItem('font');
   if (savedFont) {
     currentFont =
-      savedFont === "kumbh-sans"
-        ? "font-sans"
-        : savedFont === "roboto-slab"
-        ? "font-serif"
-        : "font-mono";
+      savedFont === 'kumbh-sans'
+        ? 'font-sans'
+        : savedFont === 'roboto-slab'
+          ? 'font-serif'
+          : 'font-mono';
     elements.body.className = currentFont;
-    document.querySelector(
-      `input[name='font'][value='${savedFont}']`
-    ).checked = true;
+    document.querySelector(`input[name='font'][value='${savedFont}']`).checked =
+      true;
   }
 
-  const savedColor = localStorage.getItem("color");
+  const savedColor = localStorage.getItem('color');
   if (savedColor) {
     const colorMap = {
-      coral: "--primary-400",
-      cyan: "--primary-500",
-      purple: "--primary-600",
+      coral: '--primary-400',
+      cyan: '--primary-500',
+      purple: '--primary-600',
     };
     elements.body.style.setProperty(
-      "--selected-color",
-      `var(${colorMap[savedColor]})`
+      '--selected-color',
+      `var(${colorMap[savedColor]})`,
     );
     document.querySelector(
-      `input[name='color'][value='${savedColor}']`
+      `input[name='color'][value='${savedColor}']`,
     ).checked = true;
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
   loadSettings();
 
   elements.tabPanels.forEach((panel) => {
     initializeProgressBar(panel);
-    panel.querySelector("button").addEventListener("click", handleTimerButton);
+    panel.querySelector('button').addEventListener('click', handleTimerButton);
   });
 
-  elements.tabList.addEventListener("keydown", changeTabFocus);
+  elements.tabList.addEventListener('keydown', changeTabFocus);
   elements.tabs.forEach((tab) => {
-    tab.addEventListener("click", changeTabPanel);
+    tab.addEventListener('click', changeTabPanel);
   });
 
-  elements.btnSettings.addEventListener("click", () => {
+  elements.btnSettings.addEventListener('click', () => {
     elements.timeInputs.forEach((input) => {
       input.value = timeValues[input.id];
 
-      const wrapper = input.closest("div");
-      const increaseBtn = wrapper.querySelector(".js-increase-btn");
-      const decreaseBtn = wrapper.querySelector(".js-decrease-btn");
+      const wrapper = input.closest('div');
+      const increaseBtn = wrapper.querySelector('.js-increase-btn');
+      const decreaseBtn = wrapper.querySelector('.js-decrease-btn');
 
-      increaseBtn.addEventListener("click", () => {
-        const max = parseInt(input.getAttribute("max"), 10);
+      increaseBtn.addEventListener('click', () => {
+        const max = parseInt(input.getAttribute('max'), 10);
         const newValue = parseInt(input.value, 10) + 1;
         input.value = Math.min(newValue, max);
       });
 
-      decreaseBtn.addEventListener("click", () => {
-        const min = parseInt(input.getAttribute("min"), 10);
+      decreaseBtn.addEventListener('click', () => {
+        const min = parseInt(input.getAttribute('min'), 10);
         const newValue = parseInt(input.value, 10) - 1;
         input.value = Math.max(newValue, min);
       });
@@ -338,23 +337,23 @@ document.addEventListener("DOMContentLoaded", () => {
     elements.dialog.showModal();
   });
 
-  elements.settingsForm.addEventListener("submit", (event) => {
+  elements.settingsForm.addEventListener('submit', (event) => {
     event.preventDefault();
     updateSettings();
     elements.dialog.close();
   });
 
-  elements.btnClose.addEventListener("click", () => {
+  elements.btnClose.addEventListener('click', () => {
     elements.dialog.close();
   });
 
   elements.tabs[0].click();
   elements.tabPanels.forEach((panel) => {
-    const timeType = panel.id.includes("1")
-      ? "pomodoro"
-      : panel.id.includes("2")
-      ? "short-break"
-      : "long-break";
+    const timeType = panel.id.includes('1')
+      ? 'pomodoro'
+      : panel.id.includes('2')
+        ? 'short-break'
+        : 'long-break';
     setTimerDuration(panel, timeValues[timeType]);
   });
 });
